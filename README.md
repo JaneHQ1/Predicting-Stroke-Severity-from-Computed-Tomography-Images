@@ -1,1 +1,4 @@
-# Cap_proj_2018_repo
+Brief Description:  Stroke is a condition where blood supply to the brain is disrupted, resulting in oxygen starvation, brain damage and loss of brain function. Stroke is already epidemic in nature: one in six people worldwide experience a stroke in their lifetime -15 million people suffer from stroke and 5.8 million die each year. Clinicians use Computed Tomography (CT) scans and Magnetic Resonance Imaging (MRI) scans to estimate the severity of stroke. Precise identification of dead tissue and tissue at risk helps interventionists to decide the next course of treatment. 
+ 
+This project aims to design, implement and test new Deep Learning algorithm to accurately predict tissue at risk from CT-perfusion images. This will involve annotating CT images, creating image labels of two types of classes, and learning to use open-source deep learning software (TensorFlow). The outcomes of the project will directly help clinicians in rapid diagnosis and stroke treatments. 
+
