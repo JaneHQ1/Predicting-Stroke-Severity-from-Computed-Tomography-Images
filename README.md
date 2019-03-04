@@ -1,7 +1,8 @@
-Hello Everyone! I divided our GUI part to be 3 tasks:
+Hello Everyone! I divided our GUI part to be 4 tasks:
 1. plot x axis view in Matplotlib 
 2. plot y axis view in Matplotlib
 3. Embed matplotlib graphs into Tkinter.
+4. Load the dicom to GUI
 
 I'm now trying to figure our how to plot x and y axis view.
 Tenzin will do the embedding part.
