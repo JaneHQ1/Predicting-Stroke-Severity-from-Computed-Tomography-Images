@@ -24,3 +24,12 @@ I hope we can do the whole project in Object oriented form. And please write des
 If anyone want to make modification, you can create another branch, if we all agreed than merge to the master branch.
 
 We are a great team! We can do very well for this project!
+-------------------------------------------------------------------------------------------------------------------------------------------
+04/03/2019
+Jane:
+I read the basic logic of representing 3D volumn through a 2D image, but do not quite understand so far.
+I think we need to use Vessel. What is vessel?
+
+Jin:
+There are say 160 slices, which means we only have 160 pixels in column, but there are 250 pixels in row. 
+Do we need to make 160 pixels to 250 pixels? How?
