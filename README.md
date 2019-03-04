@@ -1,4 +1,17 @@
-Brief Description:  Stroke is a condition where blood supply to the brain is disrupted, resulting in oxygen starvation, brain damage and loss of brain function. Stroke is already epidemic in nature: one in six people worldwide experience a stroke in their lifetime -15 million people suffer from stroke and 5.8 million die each year. Clinicians use Computed Tomography (CT) scans and Magnetic Resonance Imaging (MRI) scans to estimate the severity of stroke. Precise identification of dead tissue and tissue at risk helps interventionists to decide the next course of treatment. 
- 
-This project aims to design, implement and test new Deep Learning algorithm to accurately predict tissue at risk from CT-perfusion images. This will involve annotating CT images, creating image labels of two types of classes, and learning to use open-source deep learning software (TensorFlow). The outcomes of the project will directly help clinicians in rapid diagnosis and stroke treatments. 
+Hello Everyone! I divided our GUI part to be 3 tasks:
+1. plot x axis view in Matplotlib 
+2. plot y axis view in Matplotlib
+3. Embed matplotlib graphs into Tkinter.
+
+I'm now trying to figure our how to plot x and y axis view.
+Tenzin will do the embedding part.
+This videos are about embedding for your reference:
+https://www.youtube.com/watch?v=Zw6M-BnAPP0
+https://www.youtube.com/watch?v=kfMSN7JEtAA
+
+By the way, I've tried some coding, but it doesn't work. You can see the class embed_mat.
+I hope we can do the whole project in Object oriented form. And please write description to let others understand your code.
+If anyone want to make modification, you can create another branch, if we all agreed than merge to the master branch.
+
+We are a great team! We can do very well for this project and then kick our supervisor's ass!
 
