@@ -24,5 +24,9 @@ https://www.raddq.com/dicom-processing-segmentation-visualization-in-python/
 Successfully plot the 3D image.
 Had a breif discussion with supervisor. He doesn't recommend resampling, but image interpolation.
 Jane Read through the paper about an optimisation method for slice interpolation of medical images.
+https://arxiv.org/ftp/arxiv/papers/1402/1402.0936.pdf
 Jin is trying to find the tools to do interpolation.
+numpy.interp in python will work in interpolation
+
+
 
