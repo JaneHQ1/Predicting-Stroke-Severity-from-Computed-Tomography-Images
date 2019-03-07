@@ -60,30 +60,47 @@ def load_scan(path):
     return slices
 
 
-def voxel3d(dcms):
-    row_vector = [1, 0, 0]
-    column_vector = [0, 1, 0]
-    pixel_size = list(map(float, list(dcms[0].PixelSpacing)))
+def voxel3d(dcms,j):
+    row_vector = dcms[j].ImageOrientationPatient[0:3]
+    column_vector = dcms[j].ImageOrientationPatient[3:6]
+    pixel_size = list(map(float, list(dcms[j].PixelSpacing)))
 
     pixel_size_x = pixel_size[0]
-    pixel_location_x = 10
-    row_change_x = [i * pixel_size_x * float(pixel_location_x) for i in row_vector ]
-
     pixel_size_y = pixel_size[1]
-    pixel_location_y = 100
-    row_change_y = [i * pixel_size_y * float(pixel_location_y) for i in row_vector ]
+    image_position_patient = [float(i) for i in list(dcms[j].ImagePositionPatient)]
 
-    image_position_patient = list(dcms[0].ImagePositionPatient)
-    voxel = image_position_patient + row_change_x +row_change_y
 
-    return voxel
+
+    for m in range(dcms[j].Columns):
+        pixel_location_x = m
+        row_change_x = [i * pixel_size_x * float(pixel_location_x) for i in row_vector ]
+
+        for n in range(dcms[j].Rows):
+            pixel_location_y = n
+            row_change_y = [i * pixel_size_y * float(pixel_location_y) for i in row_vector ]
+
+            voxel = list(map(lambda x: x[0] + x[1] + x[2], zip(image_position_patient, row_change_x, row_change_y)))
+            voxel = np.array(voxel)
+            # voxel_list = np.stack(voxel_list, np.array(voxel))
+
+            return voxel
+
+
+
+
+    # np.stack(arrays, axis=0).shape
+
+
 
 
 id = 0
 data_path = r"C:\Users\Jin\Downloads\Predicting-Stroke-Severity-from-Computed-Tomography-Images-master\Test_Image"
 patient = load_scan(data_path)
 
-print(voxel3d(patient))
+voxel = voxel3d(patient,0)
+voxel_list = np.array([])
+voxel_list = np.stack(voxel_list, voxel)
+print(voxel_list)
 
 a=1
 
