@@ -18,6 +18,7 @@ Some useful websites for plot 3D volumn:
 https://www.researchgate.net/post/How_to_create_a_simple_project_to_convert_DICOM_images_to_3d_images
 https://www.researchgate.net/post/How_to_measure_the_voxel_size_and_pixel_spacing
 https://www.raddq.com/dicom-processing-segmentation-visualization-in-python/
+https://www.kaggle.com/gzuidhof/full-preprocessing-tutorial
 
 6 Registry of DICOM Data Elements
 http://dicom.nema.org/dicom/2013/output/chtml/part06/chapter_6.html
