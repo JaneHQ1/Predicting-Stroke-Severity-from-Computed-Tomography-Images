@@ -58,11 +58,26 @@ def voxel_3d_pixel(dcms,j):
     return voxel_list
 
 
-id = 0
+
+def dicom_voxel(dcms):
+    dicom_voxel_list = []
+
+    # In this case, we need to get the number of slices.
+    # We can use len(DCMS)
+    # What can we do after interpolation?
+    for i in range(10):
+        voxel_list = voxel_3d_pixel(dcms, i)
+        dicom_voxel_list.append(voxel_list)
+
+    return dicom_voxel_list
+
 data_path = r"C:\Users\janej\OneDrive\MelbUni\MASTER OF ENGINEERING\CapstoneProject_2018\Test_Images\test_images10"
 patient = load_scan(data_path)
-voxel_list = voxel_3d_pixel(patient, 0)
-print(voxel_list)
+# voxel_list = voxel_3d_pixel(patient, 0)
+# print(voxel_list)
 # t = np.array(voxel_list).shape
 # print(t)
 
+dicom_voxel_list = dicom_voxel(patient)
+print(dicom_voxel_list)
+# print(np.array(dicom_voxel_list).shape)
