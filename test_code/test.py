@@ -1,5 +1,5 @@
 """
-    Use matplotlib to plot x and y plane
+    Use matplotlib to plot x and y plane in pixel
 """
 
 import pydicom
@@ -24,23 +24,39 @@ def load_scan(path):
 
     return slices
 
-data_path = r"C:\Users\Jin\Downloads\Predicting-Stroke-Severity-from-Computed-Tomography-Images-master\Series 002 [CT - Crane SPC]"
+
+# def create_voxel_array(dcms):
+#     image = np.stack([s.pixel_array for s in dcms])
+#     return image
+
+
+def update_frontal(val):
+    index = int(s_index.val)
+    canvas_frontal.set_data(voxel_frontal[index, :])
+    plt.draw()
+
+def update_sagittal(val):
+    index = int(s_index.val)
+    canvas_frontal.set_data(voxel_sagittal[index, :])
+    plt.draw()
+
+
+data_path = r"C:\Users\janej\OneDrive\MelbUni\MASTER OF ENGINEERING\CapstoneProject_2018\Test_Images\Series 002 [CT - Crane SPC]"
 dcms = load_scan(data_path)
 image = np.stack([s.pixel_array for s in dcms])
-print(image.shape)
+# print(voxel.shape)
+# print(voxel)
+# print(voxel[0][0][0])
+voxel_frontal = image.transpose(1, 0, 2)
+voxel_sagittal = image.transpose(2, 0, 1)
+# print(voxel_frontal[95][100][102])
+# print(voxel_frontal[0,:])
 
-plane_xz=np.zeros((512,142,512))
 
-
-def voxel_xz(image):
-    for y in range(512):
-        for z in range(142):
-            for x in range(512):
-                plane_xz.itemset((y,z,x), image[z][x][y])
-                # voxel=np.stack(plane)
-    return plane_xz
-
-xz_image=voxel_xz(image)
-print(xz_image)
-print(xz_image.shape)
-a=1
+canvas_frontal = plt.imshow(voxel_frontal[0, :], cmap=plt.cm.bone)
+canvas_sagittal = plt.imshow(voxel_sagittal[0, :], cmap=plt.cm.bone)
+ax_index = plt.axes([0.15, 0.1, 0.65, 0.03], facecolor='lightgoldenrodyellow')
+s_index = Slider(ax_index, 'Index', 0, 511, valinit=0, valstep=1)
+s_index.on_changed(update_frontal)
+s_index.on_changed(update_sagittal)
+plot = plt.show()
