@@ -21,6 +21,7 @@ Some useful website for understanding DICOM:
 https://nipy.org/nibabel/dicom/dicom.html
 
 Some useful websites for plot 3D volumn:
+https://www.datacamp.com/community/tutorials/matplotlib-3d-volumetric-data
 https://www.researchgate.net/post/How_to_create_a_simple_project_to_convert_DICOM_images_to_3d_images
 https://www.researchgate.net/post/How_to_measure_the_voxel_size_and_pixel_spacing
 https://www.raddq.com/dicom-processing-segmentation-visualization-in-python/
