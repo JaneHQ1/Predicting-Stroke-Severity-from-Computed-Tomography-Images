@@ -7,6 +7,9 @@ Hello Everyone! I divided our GUI part to be 4 tasks:
 Jane and Jin are trying to figure our how to plot x and y axis view.
 Tenzin will do the embedding part.
 
+Rendering matplotlib with 5QtAgg
+https://stackoverflow.com/questions/40320797/cant-render-a-matplotlib-graph-using-qt5agg-backend
+
 This videos are about embedding for your reference:
 https://www.youtube.com/watch?v=Zw6M-BnAPP0
 https://www.youtube.com/watch?v=kfMSN7JEtAA
