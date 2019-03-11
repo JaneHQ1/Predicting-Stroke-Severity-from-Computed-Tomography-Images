@@ -12,6 +12,7 @@ https://matplotlib.org/users/event_handling.html
 
 Rendering matplotlib with 5QtAgg
 https://stackoverflow.com/questions/40320797/cant-render-a-matplotlib-graph-using-qt5agg-backend
+http://uwmsk.org/jupyter/Jupyter_DICOM_toolbox.html#1.-Reading-and-viewing-a-DICOM-image
 
 This videos are about embedding for your reference:
 https://www.youtube.com/watch?v=Zw6M-BnAPP0
