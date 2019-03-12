@@ -42,14 +42,14 @@ struct_sagittal = struct_arr.transpose(0, 2, 1)
 fig = plt.figure()
 ax_transverse = fig.add_subplot(221)
 ax_transverse.index = struct_transverse.shape[0] // 2
-ax_transverse.imshow(struct_transverse[ax_transverse.index])
+ax_transverse.imshow(struct_transverse[ax_transverse.index], cmap="gray")
 
 ax_frontal = fig.add_subplot(223)
 ax_frontal.index = struct_frontal.shape[0] // 2
-ax_frontal.imshow(struct_frontal[ax_frontal.index])
+ax_frontal.imshow(struct_frontal[ax_frontal.index], cmap="gray")
 
 ax_sagittal = fig.add_subplot(224)
-ax_sagittal.index = struct_frontal.shape[0] // 2
-ax_sagittal.imshow(struct_sagittal[ax_sagittal.index])
+ax_sagittal.index = struct_sagittal.shape[0] // 2
+ax_sagittal.imshow(struct_sagittal[ax_sagittal.index], cmap="gray")
 
 plt.show()
