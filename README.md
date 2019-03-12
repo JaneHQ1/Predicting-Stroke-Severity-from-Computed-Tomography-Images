@@ -7,6 +7,9 @@ Hello Everyone! I divided our GUI part to be 4 tasks:
 Jane and Jin are trying to figure our how to plot x and y axis view.
 Tenzin will do the embedding part.
 
+mouse_click
+https://github.com/masteringmatplotlib/interaction/blob/master/notebooks/mmpl-interaction.ipynb
+
 Nifti
 https://nipy.org/nibabel/coordinate_systems.html
 
