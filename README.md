@@ -26,6 +26,7 @@ https://www.youtube.com/watch?v=kfMSN7JEtAA
 
 Some useful website for understanding DICOM:
 https://nipy.org/nibabel/dicom/dicom.html
+http://uwmsk.org/jupyter/Jupyter_DICOM_toolbox.html
 
 Some useful websites for plot 3D volumn:
 https://www.datacamp.com/community/tutorials/matplotlib-3d-volumetric-data
