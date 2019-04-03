@@ -1,0 +1,249 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar 27 11:51:33 2019
+
+@author: Ngawang Tenzin
+"""
+
+# Importing required PyQt5 class
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, QWidget, QVBoxLayout, QScrollArea, QFileDialog
+from PyQt5.QtGui import QIcon
+
+# Importing required Matplotlib and Numpy class
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.figure import Figure
+from matplotlib import widgets
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Importing nibabel for Nifti files
+import nibabel as nib
+
+# Importing backend class for Image display and Image event
+from jj_imdisplay import *
+from jj_mpl_backend import *
+
+# Main window class
+class MainWindow(QMainWindow):
+    vol_tran, vol_fron, vol_sagi = [], [], []
+#    slice_tran, slice_fron, slice_sagi  = 0, 0, 0
+    
+    def __init__(self):
+        super().__init__()
+        self.menuWindow()
+        
+    # Menubar function
+    def menuWindow(self):
+        # Set main window dimension and title
+        self.setWindowIcon(QIcon('menuIcon/uomLog.png'))
+        self.setWindowTitle('MP4 Medical Image Processor')
+        self.setGeometry(300, 50, 650, 650)
+        
+        # Create main menu
+        mainMenu = self.menuBar()
+        basicMenu = mainMenu.addMenu('Basic')
+        analyMenu = mainMenu.addMenu('Image Analysis')
+        evaluMenu = mainMenu.addMenu('Evaluation')
+        
+        # Create submenu action and add to main menu
+        # Basic submenu
+        dicomAct = QAction(QIcon('menuIcon/fileOpen.png'), 'Load Dicom', self)
+        dicomAct.setShortcut('Ctrl+D')
+        #loadAct.triggered.connect(self.load_dicom)
+        basicMenu.addAction(dicomAct)
+        
+        niftiAct = QAction(QIcon('menuIcon/fileOpen.png'), 'Load Nifti', self)
+        niftiAct.setShortcut('Ctrl+N')
+        niftiAct.triggered.connect(self.loadNifti)
+        basicMenu.addAction(niftiAct)
+        
+        roiAct = QAction(QIcon('menuIcon/fileSave.png'), 'Region of Interest', self)
+        roiAct.setShortcut('Ctrl+R')
+        basicMenu.addAction(roiAct)
+        
+        measAct = QAction(QIcon('menuIcon/fileFile.png'), 'Measure', self)
+        measAct.setShortcut('Ctrl+M')
+        basicMenu.addAction(measAct)
+        
+        closeAct = QAction(QIcon('menuIcon/fileClose.png'), 'Close', self)
+        closeAct.setShortcut('Ctrl+Q')
+        closeAct.triggered.connect(self.close)
+        basicMenu.addAction(closeAct)
+        
+        # Image Analysis submenu
+        dectAct = QAction('Run Detection', self)
+        analyMenu.addAction(dectAct)
+        
+        segmAct = QAction('Run Segmentation', self)
+        analyMenu.addAction(segmAct)
+        
+        # Evalution submenu
+        gtruthAct = QAction('Run Ground Truth', self)
+        evaluMenu.addAction(gtruthAct)
+        
+        # Direct User to use Meny to display images
+        self.statusBar().showMessage("Use Basic Menu to display Medical Images", 5000)
+
+
+    # Extract pixel data from medical image file
+    def loadNifti(self):
+        #   Source: https://pydicom.github.io/pydicom/stable/auto_examples/input_output/plot_read_dicom.html
+        try:
+            filePath, _= QFileDialog.getOpenFileName(self, "Select Medical image", "", "Image Files (*.nii *.nii.gz)")
+            niftiFile = nib.load(filePath)
+            pixel_arr = niftiFile.get_fdata()
+            
+            tran_arr = pixel_arr.transpose(2, 1, 0)
+            fron_arr = pixel_arr.transpose(1, 2, 0)
+            sagi_arr = pixel_arr.transpose(0, 2, 1)
+            
+            self.vol_tran = np.flip(tran_arr)
+            self.vol_fron = np.flip(fron_arr)
+            self.vol_sagi = np.flip(sagi_arr)
+            
+            # Load static plot of images
+            self.staticPlot()
+
+        except:
+            self.statusBar().showMessage("File type not supported or empty !!!", 2500)
+            
+
+    # Static initial plot
+    def staticPlot(self):
+        
+         # Start of Jan_code
+#        path = r"D:\CapstoneProject\nifti_2\ARTERIELLE.nii.gz"
+#        struct = nib.load(path)
+#        struct_arr = struct.get_fdata()
+#    
+#        tran_arr = struct_arr.transpose(2, 1, 0)
+#        fron_arr = struct_arr.transpose(1, 2, 0)
+#        sagi_arr = struct_arr.transpose(0, 2, 1)
+#    
+#        vol_tran = np.flip(tran_arr)
+#        vol_fron = np.flip(fron_arr)
+#        vol_sagi = np.flip(sagi_arr)
+    
+#        app = QtWidgets.QApplication(sys.argv)
+#        win = QtWidgets.QMainWindow()
+    
+        fig = Figure()
+        self.canvas = FigureCanvas(fig)
+        ax_tran = fig.add_subplot(221, adjustable='box', aspect='auto')
+        ax_fron = fig.add_subplot(325, adjustable='box', aspect='auto')
+        ax_sagi = fig.add_subplot(326, adjustable='box', aspect='auto')
+    
+        # index = vol_tran.shape[0] // 2
+        imdis = ImageDisplay(self.vol_tran, self.vol_fron, self.vol_sagi, ax_tran, ax_fron, ax_sagi)
+        imdis.initialize_transverse_display()
+        imdis.initialize_frontal_display()
+        imdis.initialize_sagittal_display()
+    
+        ctrl_sys = ControlSys(fig, imdis, self.vol_tran, self.vol_fron, self.vol_sagi, ax_tran, ax_fron, ax_sagi)
+    
+        # Needed for keyboard events
+        # canvas.setFocusPolicy(QtCore.Qt.StrongFocus)
+        # canvas.setFocus()
+        
+        self.widget = QWidget()
+        self.setCentralWidget(self.widget)
+        self.widget.setLayout(QVBoxLayout())
+        
+        
+        self.toolbar = NavigationToolbar(self.canvas, self.widget)
+        self.widget.layout().addWidget(self.toolbar)
+        self.widget.layout().addWidget(self.canvas)
+        
+        
+#        win.setCentralWidget(canvas)
+##        win.show()
+##        sys.exit(app.exec_())
+#        # End of Jan_code
+        
+        
+     
+      
+##        win.setCentralWidget(canvas)
+#        self.centralWindow(fig)
+        
+
+#    # Dynamic plot that changes with mouse press event
+#    def dynamicPlot(self, event):
+#        fig = event.canvas.figure
+#        ax_tran, ax_fron, ax_sagi = fig.axes[0], fig.axes[1], fig.axes[2]
+#        
+#        if ax_tran.contains(event)[0]:
+#            if event.button == 1:
+#                self.slice_fron = int(event.ydata)
+#                self.slice_sagi = int(event.xdata)
+#            elif event.button == 'up':
+#                self.slice_tran += 5
+#            else:
+#                self.slice_tran -= 5
+#                
+#                
+#        elif ax_fron.contains(event)[0]:
+#            if event.button == 1:
+#                self.slice_tran = int(event.ydata)
+#                self.slice_sagi = int(event.xdata)
+#            elif event.button == 'up':
+#                self.slice_fron += 5
+#            else:
+#                self.slice_fron -= 5
+#        elif ax_sagi.contains(event)[0]:
+#            if event.button == 1:
+#                self.slice_tran = int(event.ydata)
+#                self.slice_fron = int(event.xdata)
+#            elif event.button == 'up':
+#                self.slice_sagi += 5
+#            else:
+#                self.slice_sagi -= 5
+#        else:
+#            self.statusBar().showMessage("You clicked or scroll outside of the image!", 2500)
+#            
+#        # Plot images
+#        ax_tran.imshow(self.vol_tran[self.slice_tran], cmap="gray", aspect='auto')
+#        ax_fron.imshow(self.vol_fron[self.slice_fron], cmap="gray", aspect='auto')
+#        ax_sagi.imshow(self.vol_sagi[self.slice_sagi], cmap="gray", aspect='auto')
+#                
+#        self.centralWindow(fig)
+#
+#    # Display central images
+#    def centralWindow(self, fig):
+#        self.widget = QWidget()
+#        self.setCentralWidget(self.widget)
+#        self.widget.setLayout(QVBoxLayout())
+#        
+#        
+#        self.toolbar = NavigationToolbar(self.canvas, self.widget)
+#        self.widget.layout().addWidget(self.toolbar)
+#        self.widget.layout().addWidget(self.canvas)
+#        
+#        # Connect Mouse press event with buttonPressEvent function
+#        self.canvas.mpl_connect('button_press_event', self.mousePressEvent)
+#        
+#        # Connect Mouse scroll event with mouseScrollEvent function
+#        self.canvas.mpl_connect('scroll_event', self.mouseScrollEvent)
+#        
+#    # Function that pass Mouse press event to Dynamic plot
+#    def mousePressEvent(self, event):
+#        self.dynamicPlot(event)
+##        print(event)
+##        print(event.button)
+##        print(type(event.button))
+#        
+#    # Function that ....
+#    def mouseScrollEvent(self, event):
+#        self.dynamicPlot(event)
+##        print(event)
+##        print(event.button)
+##        print(type(event.button))
+        
+# Start of main program to run
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
