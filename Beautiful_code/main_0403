@@ -1,0 +1,142 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Apr  3 14:49:57 2019
+Title: MP4-Medical Image Processing
+@author: MP4 Team
+
+"""
+#   Main Program to Start
+#   Importing required PyQt5 class
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, QWidget, QVBoxLayout, QScrollArea, QFileDialog
+from PyQt5.QtGui import QIcon
+
+#   Importing required Matplotlib and Numpy class
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.figure import Figure
+#from matplotlib import widgets
+#import matplotlib.pyplot as plt
+import numpy as np
+
+#   Importing nibabel for Nifti files
+import nibabel as nib
+
+#   Importing backend class for Image display and Image event
+from display_0403 import *
+from controller_0403 import *
+
+#   Main window class
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.menuWindow()
+        
+    # Menubar function
+    def menuWindow(self):
+         # Set main window dimension and title
+        self.setWindowIcon(QIcon('menuIcon/uomLog.png'))
+        self.setWindowTitle('MP4 Medical Image Processor')
+        self.setGeometry(300, 50, 650, 650)
+        
+        # Create main menu
+        mainMenu = self.menuBar()
+        basicMenu = mainMenu.addMenu('Basic')
+        analyMenu = mainMenu.addMenu('Image Analysis')
+        evaluMenu = mainMenu.addMenu('Evaluation')
+        
+        # Create submenu action and add to main menu
+        # Basic submenu
+        dicomAct = QAction(QIcon('menuIcon/fileOpen.png'), 'Load Dicom', self)
+        dicomAct.setShortcut('Ctrl+D')
+        #loadAct.triggered.connect(self.load_dicom)
+        basicMenu.addAction(dicomAct)
+        
+        niftiAct = QAction(QIcon('menuIcon/fileOpen.png'), 'Load Nifti', self)
+        niftiAct.setShortcut('Ctrl+N')
+        niftiAct.triggered.connect(self.loadNifti)
+        basicMenu.addAction(niftiAct)
+        
+        roiAct = QAction(QIcon('menuIcon/fileSave.png'), 'Region of Interest', self)
+        roiAct.setShortcut('Ctrl+R')
+        basicMenu.addAction(roiAct)
+        
+        measAct = QAction(QIcon('menuIcon/fileFile.png'), 'Measure', self)
+        measAct.setShortcut('Ctrl+M')
+        basicMenu.addAction(measAct)
+        
+        closeAct = QAction(QIcon('menuIcon/fileClose.png'), 'Close', self)
+        closeAct.setShortcut('Ctrl+Q')
+        closeAct.triggered.connect(self.close)
+        basicMenu.addAction(closeAct)
+        
+        # Image Analysis submenu
+        dectAct = QAction('Run Detection', self)
+        analyMenu.addAction(dectAct)
+        
+        segmAct = QAction('Run Segmentation', self)
+        analyMenu.addAction(segmAct)
+        
+        # Evalution submenu
+        gtruthAct = QAction('Run Ground Truth', self)
+        evaluMenu.addAction(gtruthAct)
+        
+        # Direct User to use Meny to display images
+        self.statusBar().showMessage("Use Basic Menu to display Medical Images", 5000)
+        
+        
+    # Extract pixel data from medical image file of NIFTI format
+    def loadNifti(self):
+        try:
+            filePath, _= QFileDialog.getOpenFileName(self, "Select Medical image", "", "Image Files (*.nii *.nii.gz)")
+            niftiFile = nib.load(filePath)
+            pixel_arr = niftiFile.get_fdata()
+            
+            tran_arr = pixel_arr.transpose(2, 1, 0)
+            fron_arr = pixel_arr.transpose(1, 2, 0)
+            sagi_arr = pixel_arr.transpose(0, 2, 1)
+            
+            self.vol_tran = np.flip(tran_arr)
+            self.vol_fron = np.flip(fron_arr)
+            self.vol_sagi = np.flip(sagi_arr)
+            
+            # Plot the image using pixel data
+            self.plotImages()
+
+        except:
+            self.statusBar().showMessage("File type not supported or empty !!!", 2500)
+            
+    # Plot the image using pixel data
+    def plotImages(self):
+        fig = Figure()
+        self.canvas = FigureCanvas(fig)
+        ax_tran = fig.add_subplot(221, adjustable='box', aspect='auto')
+        ax_fron = fig.add_subplot(325, adjustable='box', aspect='auto')
+        ax_sagi = fig.add_subplot(326, adjustable='box', aspect='auto')
+        
+        im_dis = ImageDisplay(self.vol_tran, self.vol_fron, self.vol_sagi, ax_tran, ax_fron, ax_sagi)
+        im_dis.initialize_transverse_display()
+        im_dis.initialize_frontal_display()
+        im_dis.initialize_sagittal_display()
+        
+        self.ev_ctrl = EventController(fig, im_dis, self.vol_tran, self.vol_fron, self.vol_sagi, ax_tran, ax_fron, ax_sagi)
+        
+        # Display canvas of Matplotlib as central Widget
+        self.widget = QWidget()
+        self.setCentralWidget(self.widget)
+        self.widget.setLayout(QVBoxLayout())
+
+        self.toolbar = NavigationToolbar(self.canvas, self.widget)
+        self.widget.layout().addWidget(self.toolbar)
+        self.widget.layout().addWidget(self.canvas)
+        
+        # Connect Mouse Event to Event Controller class
+        self.canvas.mpl_connect('button_press_event', self.ev_ctrl.button_press_events)
+        
+        
+#   Start of main program to run
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
