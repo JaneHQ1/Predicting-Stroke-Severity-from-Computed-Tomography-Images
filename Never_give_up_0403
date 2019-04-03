@@ -42,19 +42,13 @@ class MainWindow(QMainWindow):
         mainMenu = self.menuBar()
         basicMenu = mainMenu.addMenu('Basic')
         
-        
         # Create submenu action and add to main menu
-        
-        
         niftiAct = QAction(QIcon('menuIcon/fileOpen.png'), 'Load Nifti', self)
         niftiAct.setShortcut('Ctrl+N')
         niftiAct.triggered.connect(self.loadNifti)
         basicMenu.addAction(niftiAct)
         
-       
         
-        
-
 
     # Extract pixel data from medical image file
     def loadNifti(self):
@@ -118,4 +112,3 @@ if __name__ == '__main__':
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
-    
