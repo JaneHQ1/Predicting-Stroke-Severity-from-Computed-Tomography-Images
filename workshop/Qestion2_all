@@ -118,60 +118,64 @@
 
 
 # ###Q2.4.3
-# next_x_1 = 1 # We start the search at (1,3)
-# next_x_2 = 3
-# gamma = 0.002  # Step size multiplier
-# precision = 0.00001  # Desired precision of result
-# max_iters = 100000  # Maximum number of iterations
-#
-# # #### Derivative function (Low condition Q=[[1 0][0 1]], r=0)
-# df_1 = lambda current_x_1 : 2*next_x_1
-# df_2 = lambda current_x_2 : 2*next_x_2
-#
-# cnt=0
-#
-# for i in range(max_iters):
-#
-#     current_x_1 = next_x_1
-#     current_x_2 = next_x_2
-#
-#     next_x_1 = current_x_1 - gamma * df_1(current_x_1)
-#     next_x_2 = current_x_2 - gamma * df_2(current_x_2)
-#     step_1 = next_x_1 - current_x_1
-#     step_2 = next_x_2 - current_x_2
-#     cnt += 1
-#     if abs(step_1) <= precision and abs(step_2) <= precision:
-#         break
-#
-#
-# print("Minimum at", next_x_1)
-# print("Minimum at", next_x_2)
-# print(cnt)
-#
-#
-#
-# ##### Derivative function (High condition Q=[[100 0][0 100]], r=0)
-# df_1 = lambda current_x_1 : 200*next_x_1
-# df_2 = lambda current_x_2 : 200*next_x_2
-#
-# cnt=0
-# for i in range(max_iters):
-#
-#     current_x_1 = next_x_1
-#     current_x_2 = next_x_2
-#
-#     next_x_1 = current_x_1 - gamma * df_1(current_x_1)
-#     next_x_2 = current_x_2 - gamma * df_2(current_x_2)
-#     step_1 = next_x_1 - current_x_1
-#     step_2 = next_x_2 - current_x_2
-#     cnt += 1
-#     if abs(step_1) <= precision and abs(step_2) <= precision:
-#         break
-#
-#
-# print("Minimum at", next_x_1)
-# print("Minimum at", next_x_2)
-# print(cnt)
+next_x_1 = 1 # We start the search at (1,3)
+next_x_2 = 3
+gamma = 0.002  # Step size multiplier
+precision = 0.00001  # Desired precision of result
+max_iters = 100000  # Maximum number of iterations
+
+# #### Derivative function (Low condition Q=[[100 0][0 100]], r=0)
+df_1 = lambda current_x_1 : 200*next_x_1
+df_2 = lambda current_x_2 : 200*next_x_2
+
+cnt=0
+
+for i in range(max_iters):
+
+    current_x_1 = next_x_1
+    current_x_2 = next_x_2
+
+    next_x_1 = current_x_1 - gamma * df_1(current_x_1)
+    next_x_2 = current_x_2 - gamma * df_2(current_x_2)
+    step_1 = next_x_1 - current_x_1
+    step_2 = next_x_2 - current_x_2
+    cnt += 1
+    if abs(step_1) <= precision and abs(step_2) <= precision:
+        break
+
+
+print("Minimum at", next_x_1)
+print("Minimum at", next_x_2)
+print(cnt)
+
+
+
+##### Derivative function (High condition Q=[[100 0][0 1]], r=0)
+next_x_1 = 1 # We start the search at (1,3)
+next_x_2 = 3
+df_1 = lambda current_x_1 : 200*next_x_1
+df_2 = lambda current_x_2 : 2*next_x_2
+
+cnt=0
+for i in range(max_iters):
+
+    current_x_1 = next_x_1
+    current_x_2 = next_x_2
+
+    next_x_1 = current_x_1 - gamma * df_1(current_x_1)
+    next_x_2 = current_x_2 - gamma * df_2(current_x_2)
+    step_1 = next_x_1 - current_x_1
+    step_2 = next_x_2 - current_x_2
+    cnt += 1
+    if abs(step_1) <= precision and abs(step_2) <= precision:
+        break
+
+
+print("Minimum at", next_x_1)
+print("Minimum at", next_x_2)
+print(cnt)
+
+
 
 
 
