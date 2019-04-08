@@ -495,27 +495,17 @@ from scipy.optimize import minimize
 from scipy.optimize import linprog
 import random
 
-c = 50*np.random.rand(12)
-p = np.zeros(12)
-cons = ({'type': 'eq', 'fun': lambda p: sum(p) - 5000}, \
-       {'type': 'eq', 'fun': lambda p: p[11] - 1000})
-N = 12
+N=12
+c = np.random.uniform(10,50,N)
+A = [[1,1,1,1,1,1,1,1,1,1,1,1], [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]]
+b = [5000,-5000]
 
-k = np.zeros(12)
-def fun(p):
-    for i in range(N):
-       k[i] = p[i]*c[i]
-    return sum(k)
-p0 = np.array((0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1000.0))
-res = minimize(fun, p0, bounds=[(0.0,1000.0),(0.0,1000.0),(0.0,1000.0),(0.0,1000.0),\
+
+res = linprog(c,A,b,bounds=[(0.0,1000.0),(0.0,1000.0),(0.0,1000.0),(0.0,1000.0),\
                                 (0.0,1000.0),(0.0,1000.0),(0.0,1000.0),(0.0,1000.0),\
-                                (0.0,1000.0),(0.0,1000.0),(0.0,1000.0),(1000.0,1000.0)],
-               constraints=cons)
+                                (0.0,1000.0),(0.0,1000.0),(0.0,1000.0),(0,1000.0)])
 print(res)
-# print(res.x)
+print(res.x)
 print(c)
-
-
-
 
 
