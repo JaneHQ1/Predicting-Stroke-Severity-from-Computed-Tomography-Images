@@ -124,13 +124,9 @@
 # precision = 0.00001  # Desired precision of result
 # max_iters = 100000  # Maximum number of iterations
 #
-# # #### Derivative function (positive definite Q=[[1 0][0 1]], r=0)
+# # #### Derivative function (Low condition Q=[[1 0][0 1]], r=0)
 # df_1 = lambda current_x_1 : 2*next_x_1
 # df_2 = lambda current_x_2 : 2*next_x_2
-#
-# ##### Derivative function (non-positive definite Q=[[1000 0][0 1000]], r=0)
-# # df_1 = lambda current_x_1 : 2000*next_x_1
-# # df_2 = lambda current_x_2 : 2000*next_x_2
 #
 # cnt=0
 #
@@ -154,7 +150,7 @@
 #
 #
 #
-# ##### Derivative function (non-positive definite Q=[[100 0][0 100]], r=0)
+# ##### Derivative function (High condition Q=[[100 0][0 100]], r=0)
 # df_1 = lambda current_x_1 : 200*next_x_1
 # df_2 = lambda current_x_2 : 200*next_x_2
 #
