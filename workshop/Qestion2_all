@@ -66,55 +66,81 @@
 
 
 
-# Q2.4.2
-# next_x1 = 1  # We start the search at x=1
-# next_x2 = 3
-# gamma = 0.0002  # set small Step size
-# precision = 0.00001  # Desired precision of result
-# max_iters = 100000  # Maximum number of iterations
-#
-# # Derivative function
-# df1 = lambda x1: 4*x1
-# df2 = lambda x2: 4*x2
-# count = 0
-# for i in range(max_iters):
-#     current_x1 = next_x1
-#     current_x2 = next_x2
-#     next_x1 = current_x1 - gamma * df1(current_x1)
-#     next_x2 = current_x2 - gamma * df2(current_x2)
-#     step1 = next_x1 - current_x1
-#     step2 = next_x2 - current_x1
-#     count += 1
-#     if abs(step1) <= precision and abs(step2) <= precision:
-#         break
-#
-# print("Minimum at", next_x1, next_x2)
-# print(str(count) +" steps")
-#
-#
-# next_x1 = 1  # We start the search at (1,3)
-# next_x2 = 3
-# gamma = 0.02  # Step large size multiplier
-# precision = 0.00001  # Desired precision of result
-# max_iters = 100000  # Maximum number of iterations
-#
-# # Derivative function
-# df1 = lambda x1: 4*x1
-# df2 = lambda x2: 4*x2
-# count = 0
-# for i in range(max_iters):
-#     current_x1 = next_x1
-#     current_x2 = next_x2
-#     next_x1 = current_x1 - gamma * df1(current_x1)
-#     next_x2 = current_x2 - gamma * df2(current_x2)
-#     step1 = next_x1 - current_x1
-#     step2 = next_x2 - current_x1
-#     count += 1
-#     if abs(step1) <= precision and abs(step2) <= precision:
-#         break
-#
-# print("Minimum at", next_x1, next_x2)
-# print(str(count) +" steps")
+####Q2.4.2
+next_x1 = 1  # We start the search at x=1
+next_x2 = 3
+gamma = 0.0002  # set small Step size
+precision = 0.00001  # Desired precision of result
+max_iters = 100000  # Maximum number of iterations
+
+# Derivative function
+df1 = lambda x1: 4*x1
+df2 = lambda x2: 4*x2
+count = 0
+for i in range(max_iters):
+    current_x1 = next_x1
+    current_x2 = next_x2
+    next_x1 = current_x1 - gamma * df1(current_x1)
+    next_x2 = current_x2 - gamma * df2(current_x2)
+    step1 = next_x1 - current_x1
+    step2 = next_x2 - current_x1
+    count += 1
+    if abs(step1) <= precision and abs(step2) <= precision:
+        break
+
+print("Minimum at", next_x1, next_x2)
+print(str(count) +" steps")
+
+
+next_x1 = 1  # We start the search at (1,3)
+next_x2 = 3
+gamma = 0.2  # Step large size multiplier
+precision = 0.00001  # Desired precision of result
+max_iters = 100000  # Maximum number of iterations
+
+# Derivative function
+df1 = lambda x1: 4*x1
+df2 = lambda x2: 4*x2
+count = 0
+for i in range(max_iters):
+    current_x1 = next_x1
+    current_x2 = next_x2
+    next_x1 = current_x1 - gamma * df1(current_x1)
+    next_x2 = current_x2 - gamma * df2(current_x2)
+    step1 = next_x1 - current_x1
+    step2 = next_x2 - current_x1
+    count += 1
+    if abs(step1) <= precision and abs(step2) <= precision:
+        break
+
+print("Minimum at", next_x1, next_x2)
+print(str(count) +" steps")
+
+
+
+next_x1 = 1  # We start the search at (1,3)
+next_x2 = 3
+gamma = 1 # over-large size step
+precision = 0.00001  # Desired precision of result
+max_iters = 100000  # Maximum number of iterations
+
+# Derivative function
+df1 = lambda x1: 4*x1
+df2 = lambda x2: 4*x2
+count = 0
+for i in range(max_iters):
+    current_x1 = next_x1
+    current_x2 = next_x2
+    next_x1 = current_x1 - gamma * df1(current_x1)
+    next_x2 = current_x2 - gamma * df2(current_x2)
+    step1 = next_x1 - current_x1
+    step2 = next_x2 - current_x1
+    count += 1
+    if abs(step1) <= precision and abs(step2) <= precision:
+        break
+
+print("Minimum at", next_x1, next_x2)
+print(str(count) +" steps")
 
 
 # ###Q2.4.3
