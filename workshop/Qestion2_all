@@ -1,0 +1,420 @@
+# # #Q2.2
+# #
+# fig_3 = plt.figure()
+# ax_2 = fig_3.add_subplot(1,1,1)
+# P = np.linspace(0,1,100)
+# N=10
+#
+# S=[N*i*(1-i)**(N-1) for i in P]
+# plt.plot(P,S)
+# plt.show()
+# # #
+# # # #
+# # #Q2.3
+# S = Symbol('S')
+# P = Symbol('P')
+# S=N*P*(1-P)**(N-1)
+#
+# ds = S.diff(P)
+# ax_2 = fig_3.add_subplot(1,2,2)
+# k=np.linspace(0,1,100)
+# a = ds._args[0]+ds._args[1]
+#
+# # print(a.subs(P,1))
+# ds_fig=[a.subs(P,i) for i in k]
+# plt.plot(k, ds_fig)
+#
+# plt.show()
+#
+# def f(x):
+#     return -(N*x*(1-x)**(N-1))
+#
+# res = minimize_scalar(f)
+# print(res.x)
+
+#
+# # Q2.4.1
+
+
+# #### Derivative function (positive definite Q1=[[2 0][0 2]], r=[1 1])
+# #### Derivative function (positive definite Q2=[[2 0][0 -2]], r=[1 1])
+# fig = plt.figure()
+# ax = fig.add_subplot(1, 2, 1, projection='3d')
+# X=np.arange(-10,10,1)
+# Y=np.arange(-10,10,1)
+# X, Y = np.meshgrid(X, Y)
+# Z = 2*X**2 +2*Y**2 + X + Y
+#
+# surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1,
+# cmap=cm.gray,linewidth=0.01, antialiased=False)
+# ax.set_zlim3d(0,1000)
+#
+# ax = fig.add_subplot(1, 2, 2, projection='3d')
+# X=np.arange(-10,10,1)
+# Y=np.arange(-10,10,1)
+# X, Y = np.meshgrid(X, Y)
+# Z = (2*X)**2 - (2*Y)**2 + X + Y
+# surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1,
+# cmap=cm.gray,linewidth=0.05, antialiased=False)
+# ax.set_zlim3d(-1000,0)
+# plt.show()
+
+
+
+
+
+
+
+
+# Q2.4.2
+# next_x1 = 1  # We start the search at x=1
+# next_x2 = 3
+# gamma = 0.0002  # set small Step size
+# precision = 0.00001  # Desired precision of result
+# max_iters = 100000  # Maximum number of iterations
+#
+# # Derivative function
+# df1 = lambda x1: 4*x1
+# df2 = lambda x2: 4*x2
+# count = 0
+# for i in range(max_iters):
+#     current_x1 = next_x1
+#     current_x2 = next_x2
+#     next_x1 = current_x1 - gamma * df1(current_x1)
+#     next_x2 = current_x2 - gamma * df2(current_x2)
+#     step1 = next_x1 - current_x1
+#     step2 = next_x2 - current_x1
+#     count += 1
+#     if abs(step1) <= precision and abs(step2) <= precision:
+#         break
+#
+# print("Minimum at", next_x1, next_x2)
+# print(str(count) +" steps")
+#
+#
+# next_x1 = 1  # We start the search at (1,3)
+# next_x2 = 3
+# gamma = 0.02  # Step large size multiplier
+# precision = 0.00001  # Desired precision of result
+# max_iters = 100000  # Maximum number of iterations
+#
+# # Derivative function
+# df1 = lambda x1: 4*x1
+# df2 = lambda x2: 4*x2
+# count = 0
+# for i in range(max_iters):
+#     current_x1 = next_x1
+#     current_x2 = next_x2
+#     next_x1 = current_x1 - gamma * df1(current_x1)
+#     next_x2 = current_x2 - gamma * df2(current_x2)
+#     step1 = next_x1 - current_x1
+#     step2 = next_x2 - current_x1
+#     count += 1
+#     if abs(step1) <= precision and abs(step2) <= precision:
+#         break
+#
+# print("Minimum at", next_x1, next_x2)
+# print(str(count) +" steps")
+
+
+# ###Q2.4.3
+# next_x_1 = 1 # We start the search at (1,3)
+# next_x_2 = 3
+# gamma = 0.002  # Step size multiplier
+# precision = 0.00001  # Desired precision of result
+# max_iters = 100000  # Maximum number of iterations
+#
+# # #### Derivative function (positive definite Q=[[1 0][0 1]], r=0)
+# df_1 = lambda current_x_1 : 2*next_x_1
+# df_2 = lambda current_x_2 : 2*next_x_2
+#
+# ##### Derivative function (non-positive definite Q=[[1000 0][0 1000]], r=0)
+# # df_1 = lambda current_x_1 : 2000*next_x_1
+# # df_2 = lambda current_x_2 : 2000*next_x_2
+#
+# cnt=0
+#
+# for i in range(max_iters):
+#
+#     current_x_1 = next_x_1
+#     current_x_2 = next_x_2
+#
+#     next_x_1 = current_x_1 - gamma * df_1(current_x_1)
+#     next_x_2 = current_x_2 - gamma * df_2(current_x_2)
+#     step_1 = next_x_1 - current_x_1
+#     step_2 = next_x_2 - current_x_2
+#     cnt += 1
+#     if abs(step_1) <= precision and abs(step_2) <= precision:
+#         break
+#
+#
+# print("Minimum at", next_x_1)
+# print("Minimum at", next_x_2)
+# print(cnt)
+#
+#
+#
+# ##### Derivative function (non-positive definite Q=[[100 0][0 100]], r=0)
+# df_1 = lambda current_x_1 : 200*next_x_1
+# df_2 = lambda current_x_2 : 200*next_x_2
+#
+# cnt=0
+# for i in range(max_iters):
+#
+#     current_x_1 = next_x_1
+#     current_x_2 = next_x_2
+#
+#     next_x_1 = current_x_1 - gamma * df_1(current_x_1)
+#     next_x_2 = current_x_2 - gamma * df_2(current_x_2)
+#     step_1 = next_x_1 - current_x_1
+#     step_2 = next_x_2 - current_x_2
+#     cnt += 1
+#     if abs(step_1) <= precision and abs(step_2) <= precision:
+#         break
+#
+#
+# print("Minimum at", next_x_1)
+# print("Minimum at", next_x_2)
+# print(cnt)
+
+
+
+# # # Q2.4.4 step size
+# next_x1 = 1  # We start the search at (1,3)
+# next_x2 = 3
+# precision = 0.00001  # Desired precision of result
+# max_iters = 100000  # Maximum number of iterations
+# df1 = lambda x1: 4*x1
+# df2 = lambda x2: 4*x2
+# count = 0
+#
+# for i in range(max_iters):
+#
+#     current_x1 = next_x1
+#     current_x2 = next_x2
+#     gamma_auto = 1/(i+1)
+#     next_x1 = current_x1 - gamma_auto * df1(current_x1)
+#     next_x2 = current_x2 - gamma_auto * df2(current_x2)
+#     step1 = next_x1 - current_x1
+#     step2 = next_x2 - current_x1
+#     count += 1
+#     if abs(step1) <= precision and abs(step2) <= precision:
+#         break
+#
+# print("Minimum at", next_x1, next_x2)
+# print(str(count) +" steps")
+#
+# ## Q2.4.4 Armijo rule
+#
+# next_x1 = 1 # We start the search at (1,3)
+# next_x2 = 3
+# #beta = 0.1
+# c1 = 0.3
+# precision = 0.00001  # Desired precision of result
+# max_iters = 50 # Maximum number of iterations
+#
+# # Derivative function
+# df1 = lambda x1: 2*x1
+# df2 = lambda x2: 2*x2
+# f = lambda x1, x2: x1**2+x2**2
+# x_iters = 0
+# alpha_iters = 0
+# alpha = 5
+#
+# def get_alpha(max_iters, alpha, current_x1, current_x2):
+# #    f = lambda x1, x2: x1**2+x2**2
+#    for j in range(100):
+#        alpha = 0.95*alpha
+#        x1_ = current_x1 - alpha*df1(current_x1)
+#        x2_ = current_x2 - alpha*df2(current_x2)
+# #        print('alpha1:',alpha)
+#
+#        if f(x1_, x2_) <= f(current_x1, current_x2) - c1*alpha*(df1(current_x1)**2+df2(current_x2)**2):
+# #            print('alpha1:',alpha)
+# #            print(alpha_iters)
+#            #print('1111')
+#            print(alpha)
+#            break
+#
+#    return alpha
+#
+#
+# for i in range(max_iters):
+#    x_iters += 1
+#    current_x1 = next_x1
+#    current_x2 = next_x2
+#    alpha = get_alpha(max_iters, alpha, current_x1, current_x2)
+#    next_x1 = current_x1 - alpha * df1(current_x1)
+#    next_x2 = current_x2 - alpha * df2(current_x2)
+# #    print('alpha2:', alpha)
+# #    step1 = next_x1 - current_x1
+# #    step2 = next_x2 - current_x2
+#    dfdx1 = df1(next_x1)
+#    dfdx2 = df2(next_x2)
+#    if abs(dfdx1) <= precision and abs(dfdx2) <= precision:
+# #        print(next_x2)
+# #        print(current_x2)
+#        break
+#
+#
+# print("Minimum at", next_x1, next_x2)
+# print(str(x_iters) +" steps")
+
+
+
+# ##### Q2.4.5
+# fig1=plt.figure()
+# gamma=0.002
+# next_x1 = 1  # We start the search at (1,3)
+# next_x2 = 3
+# next_x_1 = 1  # We start the search at (1,3)
+# next_x_2 = 3
+# precision = 0.00001  # Desired precision of result
+# max_iters = 100000  # Maximum number of iterations
+# count=0
+# ## Q = [[2 0][0 2]]
+# df1 = lambda x1: 2*x1
+# df2 = lambda x2: 2*x2
+# def f(X,Y):
+#     return 2*X**2+2*Y**2
+#
+# X = np.linspace(-5,5,100)
+# Y = np.linspace(-5,5,100)
+# X,Y = np.meshgrid(X ,Y)
+# plt.contour(X,Y,f(X,Y),20)
+#
+# X = np.linspace(-5,5,20)
+# Y = np.linspace(-5,5,20)
+# X,Y = np.meshgrid(X ,Y)
+# u = -4 * X
+# v = -4 * Y
+#
+#
+# Q = plt.quiver(X, Y, u, v, units='width')
+# qk = plt.quiverkey(Q, 0.9, 0.9, 2, r'quiver', labelpos='E',
+#                    coordinates='figure')
+#
+# ### choose the 1st algorithm to get the convergence
+#
+#
+# J=[]
+# K=[]
+# for i in range(max_iters):
+#     current_x1 = next_x1
+#     current_x2 = next_x2
+#     next_x1 = current_x1 - gamma * df1(current_x1)
+#     next_x2 = current_x2 - gamma * df2(current_x2)
+#     J=np.append(J,current_x1)
+#     K=np.append(K,current_x2)
+#     step1 = next_x1 - current_x1
+#     step2 = next_x2 - current_x1
+#     count += 1
+#     if abs(step1) <= precision and abs(step2) <= precision:
+#         break
+#
+# plt.plot(J,K)
+# print("Minimum at", next_x1, next_x2)
+# print(str(count) +" steps")
+# plt.plot(1,3,'D')
+# plt.plot(next_x1,next_x2,'*')
+# plt.show()
+
+
+
+# ## Q2.5.1
+# next_x1=1
+# next_x2=3
+# gamma = 0.002  # Step size multiplier
+# precision = 0.00001  # Desired precision of result
+# max_iters = 100000  # Maximum number of iterations
+#
+# # Derivative function
+# fig3=plt.figure()
+# df1 = lambda x1: 2*x1
+# df2 = lambda x2: 2*x2
+# count = 0
+# x1_list=[]
+# x2_list=[]
+# f_list=[]
+# M=[]
+# next_x_1 = 1  # We start the search at (1,3)
+# next_x_2 = 3
+# precision = 0.00001  # Desired precision of result
+# max_iters = 100000  # Maximum number of iterations
+# gamma=0.002
+# count = 0
+# ## Q = [[2 0][0 2]]
+# df1 = lambda next_x_1 : 2*next_x_1
+# df2 = lambda next_x_2 : 2*next_x_2
+#
+# for i in range(max_iters):
+#     current_x1 = next_x1
+#     current_x2 = next_x2
+#     next_x1 = current_x1 - gamma * 4.0*(current_x1)
+#     next_x2 = current_x2 - gamma * 4.0*(current_x2)
+#     step1 = next_x1 - current_x1
+#     step2 = next_x2 - current_x1
+#     count += 1
+#
+#     f = 2*(current_x1)**2 + 2*(current_x2)**2
+#     x1_list.append(next_x1)
+#     f_list.append(f)
+#     M = np.append(M, i)
+#
+#     if abs(step1) <= precision and abs(step2) <= precision:
+#         break
+#
+# plt.plot(M, f_list)
+# plt.show()
+#
+# print("Minimum at", next_x1, next_x2)
+# print(str(count) +" steps")
+
+# #### Q2.5.2
+# x1_list=[]
+# f_list=[]
+# x2_list=[]
+# gamma=0.002
+# max_iters = 10000
+# count=0
+# next_x1=1
+# next_x2=3
+# df1 = lambda x1: 2*x1
+# df2 = lambda x2: 2*x2
+# precision = 0.00001
+# for i in range(max_iters):
+#     current_x1 = next_x1
+#     current_x2 = next_x2
+#     next_x1 = current_x1 - gamma * df1(current_x1)
+#     next_x2 = current_x2 - gamma * df2(current_x2)
+#     step1 = next_x1 - current_x1
+#     step2 = next_x2 - current_x1
+#     count += 1
+# 
+#     f = (2*current_x1)**2 + (2*current_x2)**2
+#     x1_list.append(next_x1)
+#     f_list.append(f)
+#     x2_list.append(next_x2)
+# 
+#     if abs(step1) <= precision and abs(step2) <= precision:
+#         break
+# 
+# d_x1_list = []
+# d_x2_list = []
+# d_x1 = 0
+# d_x2 = 0
+# cnt=0
+# for i in range(count):
+#     d_x1 = abs(x1_list[i] - next_x1)
+#     d_x2 = abs(x2_list[i] - next_x2)
+#     d_x1_list = np.append(d_x1_list,(d_x1**2+d_x2**2)**0.5)
+#     # d_x2_list = np.append(d_x2_list,d_x2)
+#     cnt=cnt+1
+#     d_x2_list = np.append(d_x2_list, cnt)
+# 
+# 
+# plt.plot(d_x2_list,d_x1_list)
+# plt.show()
+# 
+# print("Minimum at", next_x1, next_x2)
+# print(str(count) +" steps")
