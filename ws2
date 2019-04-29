@@ -1,0 +1,212 @@
+import pandas as pd
+import numpy as np
+from scipy import optimize
+import matplotlib.pyplot as plt
+import matplotlib
+from numpy.linalg import inv
+####Pre-Reading
+# dataset=pd.read_csv(r'C:\Users\Jin\Desktop\2019LMS-WS1-Machine_Learning\files\diode_dataset.csv', names=['Vf', 'If'])
+# dataset.head()
+#
+# plt.figure()
+# plt.plot(dataset.values[:,0], dataset.values[:,1])
+# plt.xlabel('Voltage, V')
+# plt.ylabel('Current, I')
+# plt.title('Diode I-V')
+# plt.grid()
+# plt.show()
+
+###Question 1.1
+# dataset=pd.read_csv(r'C:\Users\Jin\Desktop\2019LMS-WS1-Machine_Learning\files\diode_dataset.csv', names=['Vf', 'If'])
+# dataset.head()
+# dataset_array = dataset.values
+#
+#
+#
+# vector_I = dataset_array[:, [1]]
+# vector_I.tolist()
+# vector_V = dataset_array[:, [0]]
+# vector_V.tolist()
+#
+# def fun(a,b):
+#     return
+#
+#
+#
+#
+# ones_col = np.ones((len(vector_V), 1))
+# matrix_A = np.concatenate((ones_col, vector_V), axis=1)
+# inv = inv(np.dot(matrix_A.T, matrix_A))
+# pseudo_inv = np.dot(inv, matrix_A.T)
+# x = np.dot(pseudo_inv, vector_I)
+#
+# estimate_I = np.dot(x.T, matrix_A.T)
+# a.clip(max=2)
+#
+# print(estimate_I)
+# # print(matrix_A)
+# # print(inv(matrix_A.T))
+
+
+
+
+
+
+###Question 1.2
+from sklearn import linear_model
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.linear_model import Ridge
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import train_test_split
+import pandas as pd
+import numpy as np
+from scipy import optimize
+import matplotlib.pyplot as plt
+import matplotlib
+from numpy.linalg import inv
+dataset=pd.read_csv(r'C:\Users\Jin\Desktop\2019LMS-WS1-Machine_Learning\files\diode_dataset.csv', names=['Vf', 'If'])
+
+Vfulldata = np.array(dataset.values[:,0]).reshape(-1,1) # reshape needed for sklearn functions
+Ifulldata = np.array(dataset.values[:,1]).reshape(-1,1)
+
+# split into training and test sets
+Vtrain, Vtest, Itrain, Itest = train_test_split(Vfulldata, Ifulldata)
+
+# ##Q1.2.1
+#
+# linearRegressor = linear_model.LinearRegression()
+# linearRegressor.fit(Vtrain, Itrain)
+# V_pred_lin = linearRegressor.predict(Vtrain)
+#
+# # The coefficients
+# print('Coefficients: \n', linearRegressor.coef_)
+# # The mean squared error
+# print("Mean squared error: %.2f" % mean_squared_error(Vtrain, V_pred_lin))
+# plt.scatter(Vtrain, Itrain, color = 'red')
+# plt.plot(Vtrain, linearRegressor.predict(Vtrain), color = 'blue')
+# plt.title('Diode I-V')
+# plt.xlabel('Voltage, V')
+# plt.ylabel('Current, I')
+# plt.show()
+# a=1
+
+###Q1.2.2
+# polyRegressor = PolynomialFeatures(degree=2)
+# V_poly=polyRegressor.fit_transform(Vtrain)
+# lin_reg = linear_model.LinearRegression()
+# lin_reg.fit(V_poly, Itrain)
+# V_pred =lin_reg.predict(V_poly)
+#
+#
+# a=1
+#
+# # The coefficients
+# print('Coefficients: \n', lin_reg.coef_)
+# print(lin_reg.intercept_)
+# # The mean squared error
+# print("Mean squared error: %.2f" % mean_squared_error(Vtrain, V_pred))
+#
+# new_V, new_I = zip(*sorted(zip(Vtrain, V_pred)))
+# plt.plot(new_V, new_I)
+# plt.scatter(Vtrain, Itrain)
+# plt.title('Diode I-V')
+# plt.xlabel('Voltage, V')
+# plt.ylabel('Current, I')
+# plt.show()
+# a=1
+#
+# ###Q1.2.3
+#
+# reg = linear_model.Ridge(alpha=0.5)
+# reg.fit(Vtrain,Itrain)
+# print(reg.coef_)
+# print(reg.intercept_)
+#
+# ####method 1
+# V_pred1 =reg.predict(Vtrain)
+# V_pred_new = V_pred + V_pred1
+# print("Mean squared error: %.2f" % mean_squared_error(Vtrain, V_pred_new))
+# new_V, new_I = zip(*sorted(zip(Vtrain, V_pred_new)))
+#
+#
+# # ####method 2
+# # def combine(x):
+# #     return (-69.55830226)*x + (44.55154604+1.6675254)*(x**2) + 27.24681017-0.61510037
+# #
+# # y=np.ndarray(shape=(17))
+# # # y=np.zeros(len(Vtrain))
+# # for i in Vtrain:
+# #     y = combine(Vtrain)
+# # new_V, new_I = zip(*sorted(zip(Vtrain, y)))
+#
+# plt.plot(new_V, new_I)
+#
+# plt.scatter(Vtrain, Itrain)
+# plt.title('Diode I-V')
+# plt.xlabel('Voltage, V')
+# plt.ylabel('Current, I')
+# plt.show()
+# a=1
+
+####Q1.2.4
+###change the demision degree = 2 and 4
+
+#
+# class Polynomial(object):
+#     def __init__(self, Vtrain, Itrain, d):
+#         self.Vtrain = Vtrain
+#         self.Itrain = Itrain
+#         self.d = d
+#
+#     def pltpoly(self):
+#         polyRegressor = PolynomialFeatures(degree=self.d)
+#         self.V_poly = polyRegressor.fit_transform(self.Vtrain)
+#         self.lin_reg = linear_model.LinearRegression()
+#         self.lin_reg.fit(self.V_poly, self.Itrain)
+#         self.V_pred = self.lin_reg.predict(self.V_poly)
+#         self.new_V, self.new_I = zip(*sorted(zip(self.Vtrain, self.V_pred)))
+#
+#
+#         print('Coefficients: \n', self.lin_reg.coef_)
+#         print(self.lin_reg.intercept_)
+#         print("Mean squared error: %.2f" % mean_squared_error(self.Vtrain, self.V_pred))
+#
+#
+# ploy_d2 = Polynomial(Vtrain, Itrain, 2)
+# poly_d2.pltpoly()
+
+
+
+# ax2.plot(pltpoly(2).new_V, new_I)
+# plt.scatter(Vtrain, Itrain)
+# plt.title('Diode I-V')
+# plt.xlabel('Voltage, V')
+# plt.ylabel('Current, I')
+# plt.show()
+
+
+####Q2.1
+from sklearn import cluster, datasets, mixture
+from sklearn.cluster import KMeans
+from sklearn.utils import shuffle
+from sklearn import decomposition
+from sklearn.mixture import GaussianMixture
+from sklearn import metrics
+import numpy as np
+import matplotlib.pyplot as plt
+
+noisy_moons = datasets.make_moons(n_samples=200, noise=0.05)
+X = noisy_moons[0] # data points
+kmeans = KMeans(n_clusters=4, random_state=0)
+y_pred = kmeans.fit_predict(X)
+centroids = kmeans.cluster_centers_
+
+# Plot data
+plt.figure()
+plt.scatter(X[:, 0], X[:, 1], c=y_pred)
+plt.scatter(centroids[:, 0], centroids[:, 1],
+            marker='x', s=169, linewidths=3,
+            color='r', zorder=10)
+plt.show()
+
