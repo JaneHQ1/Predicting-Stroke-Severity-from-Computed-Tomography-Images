@@ -4,10 +4,10 @@ import os
 
 path="D:/DiCom/Model/pytorch-3dunet/resources/nii_data"
 amount=110		# change this to total file number
-zip=5
+zip=10
 
 
-for i in range(100,amount):
+for i in range(amount):
 	raw=os.path.join(path,"volume-"+str(i)+".nii")
 	label=os.path.join(path,"segmentation-"+str(i)+".nii")
 	raw=nib.load(raw).get_fdata()
@@ -18,7 +18,7 @@ for i in range(100,amount):
 	h5_file.create_dataset("raw",raw.shape,dtype="f8",data=raw)
 	h5_file.close()
 	
-	if (i%zip == 100) and (i != 0):
+	if (i%zip == 0) and (i != 0):
 		cmd="WinRAR a -r test.rar "
 		for j in range(i-zip,i):
 			cmd += "data-"+str(j)+".hdf5 "
