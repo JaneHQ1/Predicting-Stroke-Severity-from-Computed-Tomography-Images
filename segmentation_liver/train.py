@@ -11,11 +11,11 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.autograd import Variable
 
-# from tensorboardX import SummaryWriter
+from tensorboardX import SummaryWriter
 
 ### variables ###
 
-model_name = 'U-Net'
+model_name = 'UNet'
 
 augment = True
 # dropout = True
@@ -35,8 +35,13 @@ epochs = 100
 
 #################
 
+checkpoint_dir = './logs'
+
 # Creates writer object. The log will be saved in 'tensorboard/logs'
-# writer = SummaryWriter('tensorboard/logs')
+if not os.path.isdir(checkpoint_dir):
+    os.makedirs(checkpoint_dir)
+
+writer = SummaryWriter(os.path.join(checkpoint_dir, 'exp_{}'.format(lr)))
 
 train_folder = 'data/train'
 val_folder = 'data/val'
@@ -80,7 +85,7 @@ train_data = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=F
 # val = LiverDataSet(directory=val_folder, context=context)
 val = LiverDataSet(directory=val_folder)
 val_data_list = []
-patients = val.getPatients() # Returns a dictionary where values are lists.
+patients = val.getPatients()  # Returns a dictionary where values are lists.
 for key in patients.keys():
     samples = patients[key]
     val_sampler = torch.utils.data.sampler.SubsetRandomSampler(samples)
@@ -113,6 +118,8 @@ for epoch in range(epochs):
             inputs, labels = inputs.cuda(), labels.cuda()
 
         inputs, labels = Variable(inputs), Variable(labels)
+        # input = torch.Tensor(inputs)
+        # labels = torch.Tensor(outputs)
 
         # forward pass and loss calculation
         outputs = net(inputs)
@@ -133,6 +140,9 @@ for epoch in range(epochs):
 
         # save and print statistics
         running_loss += loss.data[0]
+
+        # log the loss
+        writer.add_scalars('Training Loss', loss.item(), len(train_data)*epoch+i)
 
     # print statistics
     if dice:
@@ -161,8 +171,13 @@ for epoch in range(epochs):
 
             # wrap data in Variable
             inputs, labels = data
-            if cuda: inputs, labels = inputs.cuda(), labels.cuda()
-            inputs, labels = Variable(inputs, volatile=True), Variable(labels, volatile=True)
+            if cuda:
+                inputs, labels = inputs.cuda(), labels.cuda()
+
+            # Variables are no longer necessary to use autograd with tensors.
+            # Autograd automatically supports Tensor with requires_grad set to True
+            # inputs, labels = Variable(inputs, volatile=True), Variable(labels, volatile=True)
+            inputs, labels = Variable(inputs), Variable(labels)
 
             # inference
             outputs = net(inputs)
@@ -192,4 +207,7 @@ for epoch in range(epochs):
 
 torch.save(net, "model_" + str(model_name) + ".pht")
 
+writer.close()
+
 print('Finished training...')
+

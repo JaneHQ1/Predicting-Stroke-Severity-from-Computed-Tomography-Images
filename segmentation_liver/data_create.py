@@ -7,11 +7,10 @@ import os.path
 
 # validation list
 # val_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-
 val_list = [3]
 
 # source folder where the .nii.gz files are located
-source_folder = r'E:\training_test'
+source_folder = r'E:\training_test2'
 
 #################
 
@@ -46,7 +45,7 @@ for file_name in os.listdir(source_folder):
     data = nib.load(os.path.join(source_folder, file_name))
 
     # convert to numpy
-    data = data.get_data()
+    data = data.get_fdata()
 
     # check if it is a volume file and clip and standardize if so
     if file_name[:3] == 'vol':
@@ -56,7 +55,8 @@ for file_name in os.listdir(source_folder):
 
     # check if it is a segmentation file and select only the tumor (2) as positive label
     if file_name[:3] == 'seg':
-        data = (data == 1).astype(np.uint8)
+        # data = (data != 0).astype(np.uint8)
+        data = (data != 0)
 
     # transpose so the z-axis (slices) are the first dimension
     data = np.transpose(data, (2, 0, 1))

@@ -4,14 +4,15 @@ import numpy as np
 import torch
 import nibabel as nib
 from torch.autograd import Variable
+import torch.autograd
 
 ### variables ###
 
 # name of the model saved
-model_name = '25D'
+model_name = 'UNet'
 
 # the number of context slices before and after as defined as in train.py before training
-context = 2
+# context = 2
 
 # directory where to store nii.gz or numpy files
 result_folder = 'results'
@@ -19,7 +20,7 @@ test_folder = '../../data/Test Batch 1'
 
 #################
 
-# create result folder if neccessary
+# create result folder if necessary
 if not os.path.isdir(result_folder):
     os.makedirs(result_folder)
 
@@ -29,7 +30,9 @@ files = [file for file in os.listdir(test_folder) if file[:4] == "test"]
 # load network
 cuda = torch.cuda.is_available()
 net = torch.load("model_" + model_name + ".pht")
-if cuda: net = torch.nn.DataParallel(net, device_ids=list(range(torch.cuda.device_count()))).cuda()
+if cuda:
+    net = torch.nn.DataParallel(net, device_ids=list(range(torch.cuda.device_count()))).cuda()
+
 net.eval()  # inference mode
 
 for file_name in files:
@@ -41,7 +44,7 @@ for file_name in files:
     input_aff = data.affine
 
     # convert to numpy
-    data = data.get_data()
+    data = data.get_fdata()
 
     # normalize data
     data = np.clip(data, -200, 200) / 400.0 + 0.5
@@ -57,11 +60,12 @@ for file_name in files:
 
         # append multiple slices in a row
         slices_input = []
-        z = i - context
+        # z = i - context
 
         # middle slice first, same as during training
         slices_input.append(np.expand_dims(data[i], 0))
 
+        '''
         while z <= i + context:
 
             if z == i:
@@ -77,12 +81,16 @@ for file_name in files:
                 # append slice z
                 slices_input.append(np.expand_dims(data[z], 0))
             z += 1
+        '''
 
         inputs = np.expand_dims(np.concatenate(slices_input, 0), 0)
 
         # run slices through the network and save the predictions
-        inputs = Variable(torch.from_numpy(inputs).float(), volatile=True)
-        if cuda: inputs = inputs.cuda()
+        # inputs = Variable(torch.from_numpy(inputs).float(), volatile=True)
+        inputs = torch.from_numpy(inputs).float()
+
+        if cuda:
+            inputs = inputs.cuda()
 
         # inference
         outputs = net(inputs)
@@ -90,7 +98,8 @@ for file_name in files:
         outputs = outputs.data.cpu().numpy()
 
         # save slices (* 2 because of liver tumor predictions, not liver predictions)
-        output[i, :, :] = outputs * 2
+        # output[i, :, :] = outputs * 2
+        output[i, :, :] = outputs
 
     # transpose so z-axis is last axis again and transform into nifti file
     output = np.transpose(output, (1, 2, 0)).astype(np.uint8)
@@ -101,3 +110,4 @@ for file_name in files:
     print(new_file_name)
 
     nib.save(output, os.path.join(result_folder, new_file_name))
+
