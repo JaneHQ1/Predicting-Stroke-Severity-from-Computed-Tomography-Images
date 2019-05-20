@@ -1,0 +1,97 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr  4 12:47:30 2019
+Title: MP4-Medical Image Processing
+@author: MP4 Team
+
+"""
+#from matplotlib.widgets import Slider
+#
+## Create a slider for medical image slices
+#class SliderControl:
+#    def __init__(self, fig, max_index):
+#        self.fig = fig
+#        
+#    def build_slider_bar(self, fig):
+#        bar_axes = fig.add_axes([0.25, 0.1, 0.65, 0.03], facecolor='lightgoldenrodyellow')
+#        slider_bar = Slider(bar_axes, 'Slice', 0, 300, valinit=0, valstep=1)
+#        return bar
+#    
+#    axfreq = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=axcolor)
+#    sfreq = Slider(axfreq, 'Freq', 0.1, 30.0, valinit=f0, valstep=delta_f)
+#    
+
+#class ControlSys(ButtonControl):
+#    def __init__(self, fig, vol_tran, tran_view):
+#        self.fig = fig
+#        self.vol_tran = vol_tran
+#        self.tran_view = tran_view
+#
+#        ButtonControl.__init__(self, fig)
+#        self.slider_bar = self.build_slider_bar(fig)
+#        self.slider_bar.on_changed(self.update_slider_bar)
+#
+#    def update_slider_bar(self, index):
+#        # self.slider_bar.set_val(index)
+#        self.tran_view.update_display(int(index))
+#        self.fig.canvas.draw_idle()
+#        
+#        
+
+    
+# Validate window controller
+class ValidateWindowCtr(object):
+    # Initialization
+    def __init__(self, fig, im_truth, im_segmen, vol_truth_data, vol_segmen_data, ax_truth, ax_segmen, index_truth, index_segmen):
+        self.fig = fig
+        self.im_truth = im_truth
+        self.im_segmen = im_segmen
+        self.vol_truth_data = vol_truth_data
+        self.vol_segmen_data = vol_segmen_data
+        self.ax_truth = ax_truth
+        self.ax_segmen = ax_segmen
+        self.index_truth = index_truth
+        self.index_segmen = index_segmen
+        
+        self.scroll_truth = None
+        self.scroll_segmen = None
+        self.fig.canvas.mpl_connect('axes_enter_event', self.fig_enter_event)
+        self.fig.canvas.mpl_connect('axes_leave_event', self.fig_leave_event)
+        
+    # Enable scrolling image
+    def fig_enter_event(self, event):
+        if self.ax_truth.in_axes(event):
+            self.scroll_truth = self.fig.canvas.mpl_connect('scroll_event', self.truth_subplot_scroll)
+            
+        elif self.ax_segmen.in_axes(event):
+            self.scroll_segmen = self.fig.canvas.mpl_connect('scroll_event', self.segmen_subplot_scroll)
+            
+    # Disable scrolling image
+    def fig_leave_event(self, event):
+        self.fig.canvas.mpl_disconnect(self.scroll_truth)
+        self.fig.canvas.mpl_disconnect(self.scroll_segmen)
+        
+    # Scroll ground truth image
+    def truth_subplot_scroll(self, event):       
+        if event.button == 'down' and (self.index_truth[-1] > -1*self.vol_truth_data.shape[0]):
+            self.index_truth[-1] -= 1
+            
+        if event.button == 'up' and (self.index_truth[-1] < self.vol_truth_data.shape[0]-1):
+            self.index_truth[-1] += 1
+        
+        print('(gtruth index, segmen index): ', (self.index_truth[-1], self.index_segmen[-1]))     
+        self.im_truth.set_data(self.vol_truth_data[self.index_truth[-1]])
+        self.fig.canvas.draw_idle()
+    
+    # Scroll segmented image
+    def segmen_subplot_scroll(self, event):       
+        if event.button == 'down' and (self.index_segmen[-1] > -1*self.vol_segmen_data.shape[0]):
+            self.index_segmen[-1] -= 1
+            
+        if event.button == 'up' and (self.index_segmen[-1] < self.vol_segmen_data.shape[0]-1):
+            self.index_segmen[-1] += 1
+            
+        print('(gtruth index, segmen index): ', (self.index_truth[-1], self.index_segmen[-1])) 
+        self.im_segmen.set_data(self.vol_segmen_data[self.index_segmen[-1]])
+        self.fig.canvas.draw_idle()
+        
