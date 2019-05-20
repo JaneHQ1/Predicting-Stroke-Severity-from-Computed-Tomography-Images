@@ -36,9 +36,7 @@ Title: MP4-Medical Image Processing
 #        self.tran_view.update_display(int(index))
 #        self.fig.canvas.draw_idle()
 #        
-#        
 
-    
 # Validate window controller
 class ValidateWindowCtr(object):
     # Initialization
@@ -53,6 +51,13 @@ class ValidateWindowCtr(object):
         self.index_truth = index_truth
         self.index_segmen = index_segmen
         
+        self.txt_truth = self.ax_truth.text(0, 650, 'Slice No: '+str(self.index_truth[-1]), color='b')
+        self.txt_segmen = self.ax_segmen.text(0, 650, 'Slice No: '+str(self.index_segmen[-1]), color='b')
+        
+#        ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=14,
+#        verticalalignment='top', bbox=props)
+
+        
         self.scroll_truth = None
         self.scroll_segmen = None
         self.fig.canvas.mpl_connect('axes_enter_event', self.fig_enter_event)
@@ -62,9 +67,11 @@ class ValidateWindowCtr(object):
     def fig_enter_event(self, event):
         if self.ax_truth.in_axes(event):
             self.scroll_truth = self.fig.canvas.mpl_connect('scroll_event', self.truth_subplot_scroll)
+            #self.plot_cursor(coord_tran, self.lx_tran, self.ly_tran, self.txt_tran)
             
         elif self.ax_segmen.in_axes(event):
             self.scroll_segmen = self.fig.canvas.mpl_connect('scroll_event', self.segmen_subplot_scroll)
+            #self.plot_cursor(coord_tran, self.lx_tran, self.ly_tran, self.txt_tran)
             
     # Disable scrolling image
     def fig_leave_event(self, event):
@@ -81,6 +88,7 @@ class ValidateWindowCtr(object):
         
         print('(gtruth index, segmen index): ', (self.index_truth[-1], self.index_segmen[-1]))     
         self.im_truth.set_data(self.vol_truth_data[self.index_truth[-1]])
+        self.txt_truth.set_text('Slice No: '+str(self.index_truth[-1]))
         self.fig.canvas.draw_idle()
     
     # Scroll segmented image
@@ -93,5 +101,6 @@ class ValidateWindowCtr(object):
             
         print('(gtruth index, segmen index): ', (self.index_truth[-1], self.index_segmen[-1])) 
         self.im_segmen.set_data(self.vol_segmen_data[self.index_segmen[-1]])
+        self.txt_segmen.set_text('Slice No: '+str(self.index_segmen[-1]))        
         self.fig.canvas.draw_idle()
-        
+      
