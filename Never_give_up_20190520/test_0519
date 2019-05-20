@@ -1,0 +1,180 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun May 19 15:49:11 2019
+
+@author: Ngawang Tenzin
+"""
+
+#   Main Program to Start
+#   Importing required PyQt5 class
+import sys
+import os
+from PyQt5.QtGui import QIcon, QColor
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QAction, QWidget, QTableWidget, QTableWidgetItem, 
+                             QVBoxLayout, QFileDialog)
+#   Importing required Matplotlib and Numpy class
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+from matplotlib.widgets import Slider
+#from matplotlib.pyplot import plt
+import numpy as np
+import re
+
+#   Importing nibabel for Nifti files
+import nibabel as nib
+import h5py
+
+#   Importing backend class for Image display and Image event
+from cap_0519_display import ImageDisplay
+from cap_0519_ccontroller import ClickController
+from cap_0519_scontroller import ScrollController
+from cap_0519_roi import SingleWindowCtr
+from cap_0519_segmen import ValidateWindowCtr
+from cap_0519_patient import *
+
+# Window to display image in single axes
+class ValidateWindow(QMainWindow):
+    def __init__(self, vol_truth_data, vol_segmen_data, index_truth, index_segmen):
+        super().__init__()
+        self.vol_truth_data = vol_truth_data
+        self.vol_segmen_data = vol_segmen_data
+        self.index_truth = index_truth
+        self.index_segmen = index_segmen
+        
+        # Set validation window dimension and title; and plot
+        self.setWindowIcon(QIcon('menu_icon/uomLog.png'))
+        self.setWindowTitle('Validation of Medical Image Segmentation')
+        self.setGeometry(450, 50, 650, 650)
+        self.plot_validate_image()
+        
+    # Plot two image side by side on the window
+    def plot_validate_image(self):
+        fig = Figure()
+        self.canvas = FigureCanvas(fig)
+        ax_truth = fig.add_subplot(221, adjustable='box', aspect='auto')
+        im_truth = ax_truth.imshow(self.vol_truth_data[self.index_truth[-1]], cmap="gray")
+        ax_truth.set_title('Ground Truth Image', color = 'b')
+        
+        ax_segmen = fig.add_subplot(222, adjustable='box', aspect='auto')
+        im_segmen = ax_segmen.imshow(self.vol_segmen_data[self.index_segmen[-1]], cmap="gray")
+        ax_segmen.set_title('Segmented Image', color = 'b')
+        
+        self.segmen_ctrl = ValidateWindowCtr(fig, im_truth, im_segmen, self.vol_truth_data, self.vol_segmen_data, 
+                                             ax_truth, ax_segmen, self.index_truth, self.index_segmen)
+        
+#        slider_ax = self.fig.add_axes([0.25, 0.1, 0.65, 0.03], facecolor='lightgoldenrodyellow')
+#        slider_bar = Slider(slider_ax, 'Slice Index', 0, 360, valinit=108, valstep=1)
+#        slider_bar.on_changed(self.update_validate_image)
+        
+        
+        # Display canvas of Matplotlib as central Widget
+        self.widget = QWidget()
+        self.setCentralWidget(self.widget)
+        self.widget.setLayout(QVBoxLayout())
+        self.widget.layout().addWidget(self.canvas)
+        
+        
+#    def update_validate_image(self, val):
+#        self.im_truth.set_data(self.vol_truth_data[val])
+#        self.im_truth.set_data(self.vol_segmen_data[val])
+#        self.fig.canvas.draw_idle()
+#        
+#        
+#        self.im_tran.set_data(self.vol_tran[index])
+#        
+#        self.tran_view.update_display(int(index))
+#        self.fig.canvas.draw_idle()
+#            freq = sfreq.val
+#            l.set_ydata(15*np.sin(2*np.pi*freq*t))
+#            fig.canvas.draw_idle()
+#        
+#        
+#
+#        axcolor = 'lightgoldenrodyellow'
+#        axfreq = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=axcolor)
+#        sfreq = Slider(axfreq, 'Freq', 0.1, 30.0, valinit=f0, valstep=delta_f)
+#        def update(val):
+#            freq = sfreq.val
+#            l.set_ydata(15*np.sin(2*np.pi*freq*t))
+#            fig.canvas.draw_idle()
+#            
+#        sfreq.on_changed(update)
+#        
+#        barax = fig.add_axes([0.226, 0.005, 0.572, 0.02], facecolor='lightgoldenrodyellow')
+#        bar = widgets.Slider(barax, 'Index', 0, 300, valinit=0, valstep=1)
+#        self.slider_bar.on_changed(self.update_slider_bar)
+#        
+#    def update_slider_bar(self, index):
+#        # self.slider_bar.set_val(index)
+#        self.tran_view.update_display(int(index))
+#        self.fig.canvas.draw_idle()
+    
+#   Main window class
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.roi_data, self.tran_index, self.fron_index, self.sagi_index = [], [0], [0], [0]
+        self.index_truth, self.index_segmen = [0], [0]
+        self.menu_window()
+        
+    # Menubar function
+    def menu_window(self):
+         # Set main window dimension and title
+        self.setWindowIcon(QIcon('menu_icon/uomLog.png'))
+        self.setWindowTitle('MP4 Medical Image Processor')
+        self.setGeometry(75, 50, 700, 650)
+        
+        # Create main menu
+        main_menu = self.menuBar()
+        analysis_menu = main_menu.addMenu('Image Analysis')
+        
+        # Create submenu action and add to main menu
+        # Image Analysis submenu        
+        segmen_action = QAction('Run Segmentation', self)
+        segmen_action.triggered.connect(self.load_segmentation_file)
+        analysis_menu.addAction(segmen_action)
+        
+    # Extract pixel data from h5 and ground truth file
+    def load_segmentation_file(self):
+        # To extract pixel data
+        #file_path, _= QFileDialog.getOpenFileName(self, 'Select Medical image', '', 'Image Files (*.nii *.nii.gz)')
+        path_gtruth = r"D:\CapstoneProject\current_test_code\training_data\Training Batch 1\segmentation-99.nii"
+        path_segmen = r"D:\CapstoneProject\current_test_code\data-99_predictions.h5"
+        
+        nifti_file = nib.load(path_gtruth)
+        voxel_nifti = nifti_file.get_fdata()*255
+        voxel_segmen = h5py.File(path_segmen,"r")["predictions"].value
+        
+#        print(voxel_nifti.shape)
+#        print(voxel_segmen.shape)
+        
+        nifti_pixel_arr = np.flip(voxel_nifti.transpose(2, 1, 0))
+        segmen_pixel_arr = np.flip(voxel_segmen.transpose(2, 1, 0))
+        
+        self.index_truth[0] = nifti_pixel_arr.shape[0] // 3
+        self.index_segmen[0] = segmen_pixel_arr.shape[0] // 3
+        
+        # Plot the image using pixel data
+        self.valid_window = ValidateWindow(nifti_pixel_arr, segmen_pixel_arr, self.index_truth, self.index_segmen)
+        self.valid_window.show()
+        
+#        try:
+#            # To extract pixel data
+#            file_path, _= QFileDialog.getOpenFileName(self, 'Select Medical image', '', 'Image Files (*.nii *.nii.gz)')
+#            nifti_file = nib.load(file_path)
+#            voxel = nifti_file.get_fdata()*255
+#            pixel_arr = voxel.transpose(2, 1, 0)
+#            
+#            # Plot the image using pixel data
+#            self.ValidateWindow(pixel_arr, 0, pixel_arr)
+#
+#        except:
+#            self.statusBar().showMessage('File type not supported or empty !', 2500)
+#            
+#   Start of main program to run
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
+    
